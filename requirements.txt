@@ -1,0 +1,16 @@
+diffprivlib
+gensim
+matplotlib
+nltk
+numpy
+pandarallel
+pandas
+sacremoses
+seaborn
+sentence-transformers
+sklearn
+torch
+torchtyping
+transformers
+datasets
+evaluate
