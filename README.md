@@ -1,4 +1,8 @@
-## EMNLP 2023 Findings: Locally Differentially Private Document Generation
+## EMNLP 2023 Findings: Locally Differentially Private Document Generation Using Zero Shot Prompting
+
+<img src="dp_prompt.png" alt="Image Alt Text" width="50%">
+
+
 
 ### Overview
 
