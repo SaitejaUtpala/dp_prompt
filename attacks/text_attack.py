@@ -103,7 +103,6 @@ def get_stats_for_entire_df(
         column not in private_df.columns for column in ["sentiment_id", "author_id"]
     )
 
-    private_columns = private_df.columns.to_list()
     attack_types = ["static"]
     
     

@@ -6,12 +6,11 @@ from gensim.models import Word2Vec
 
 import gensim.downloader as api
 from pandarallel import pandarallel
-from gensim.similarities import AnnoyIndex
 from nltk.tokenize import word_tokenize
 from sacremoses import MosesDetokenizer
 from gensim.similarities.annoy import AnnoyIndexer
 import pandas as pd
-from typing import List
+from typing import List, Any
 
 
 num_trees = 500
@@ -20,7 +19,6 @@ html_cleaner = re.compile("<.*?>")
 pandarallel.initialize(progress_bar=True)
 model_gigaword = api.load("glove-wiki-gigaword-50")
 annoy_index = AnnoyIndexer(model_gigaword, num_trees)
-
 
 def multivariate_laplace(dimension: int, epsilon: float) -> np.ndarray:
     """
@@ -68,7 +66,7 @@ def madlib(
     return priv_review
 
 
-def madlib_eps(
+def madlib_df(
     eps_list: List[float], df: pd.DataFrame, field: str, save_path: str
 ) -> pd.DataFrame:
     """
