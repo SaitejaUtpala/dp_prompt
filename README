@@ -1,9 +1,1 @@
-# EMNLP 2023 Findings: Locally Differentially Private Document Generation
-
-## Overview
-
-Welcome to the repository for the paper "Locally Differentially Private Document Generation Using Zero Shot Prompting," presented at EMNLP 2023 Findings. This paper introduces a method for generating differentially private text documents using zero-shot prompting techniques.
-
-
-
-
+## EMNLP 2023 (Findings): Locally Differentially Private Document Generation Using Zero Shot Prompting
