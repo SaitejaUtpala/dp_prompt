@@ -38,7 +38,7 @@ def multivariate_laplace(dimension: int, epsilon: float) -> np.ndarray:
 
 
 def madlib(
-    review: str, model: Word2Vec, html_cleaner: str, indexer: AnnoyIndex, epsilon: float
+    review: str, model: Word2Vec, html_cleaner: str, indexer: AnnoyIndexer, epsilon: float
 ) -> str:
     """
     Apply madlib mechansim to a single text review.

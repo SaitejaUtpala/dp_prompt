@@ -126,7 +126,7 @@ def attack(
 
     return stats
 
-def get_stats_for_entire_df(
+def get_embedding_attack_stats(
     clean_df, private_df, columns_to_run, train_idx_list, val_idx_list, test_idx_list, encode=True
 ):
     assert all(
@@ -140,7 +140,7 @@ def get_stats_for_entire_df(
     if encode:
         encode_df(data_df=private_df, encode_fields=columns_to_run)
         encode_df(data_df=clean_df, encode_fields=["review"])
-        
+        columns_to_run = [ f"{col}_embeddings" for col in columns_to_run ]
         
     model_stats = {}
     for private_column_embeddings in columns_to_run:

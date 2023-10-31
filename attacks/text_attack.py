@@ -93,7 +93,7 @@ def attack(
     return stats
 
 
-def get_stats_for_entire_df(
+def get_text_attack_stats(
     clean_df, private_df, columns_to_run, train_idx_list, val_idx_list, test_idx_list
 ):
     assert all(

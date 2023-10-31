@@ -1,12 +1,11 @@
-# EMNLP 2023 Findings: Locally Differentially Private Document Generation
+## EMNLP 2023 Findings: Locally Differentially Private Document Generation
 
-## Overview
+### Overview
 
 This is the repository for the paper "Locally Differentially Private Document Generation Using Zero Shot Prompting," presented at EMNLP 2023 Findings. This paper introduces a method for generating differentially private text documents using zero-shot prompting techniques.
 
-## Repository Contents
+### Repository Contents
 
-- **.gitignore**: Git configuration file for specifying which files and directories to ignore.
 
 - **attacks**: Directory containing Python scripts for attacks.
 
@@ -16,13 +15,13 @@ This is the repository for the paper "Locally Differentially Private Document Ge
 
 - **requirements.txt**: File listing the required packages and dependencies for the project.
 
-## Prerequisites
+### Prerequisites
 
 - Python 3.9+
 - Dependencies listed in `requirements.txt`
 - A suitable environment or container (e.g., virtual environment)
 
-## Installation
+### Installation
 
 To set up the project on your local machine, follow these steps:
 
