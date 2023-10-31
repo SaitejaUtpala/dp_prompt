@@ -25,14 +25,9 @@ This is the repository for the paper "Locally Differentially Private Document Ge
 
 To set up the project on your local machine, follow these steps:
 
-1. Clone the repository:
 
-
-git clone https://github.com/your-username/emnlp-2023-document-generation.git
-cd emnlp-2023-document-generation
-
-2. Create a virtual environment (recommended):
-
-pip install -r requirements.txt
+1. git clone git@github.com:SaitejaUtpala/dp_prompt.git
+2. cd dp_prompt
+3. pip install -r requirements.txt
 
 
