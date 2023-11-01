@@ -19,6 +19,9 @@ This is the repository for the paper "Locally Differentially Private Document Ge
 
 - **requirements.txt**: File listing the required packages and dependencies for the project.
 
+- [**dp_prompt.ipynb**](dp_prompt.ipynb): Demo notebook showing an experiment snapshot comparing DP-Prompt vs Madlib.
+
+
 ### Prerequisites
 
 - Python 3.9+
@@ -35,3 +38,6 @@ To set up the project on your local machine, follow these steps:
 3. pip install -r requirements.txt
 
 
+### Demo Notebook
+
+Demo notebook showing experiment snapshot comparing DP-Prompt vs Madlib  [clicking here](dp_prompt.ipynb).
