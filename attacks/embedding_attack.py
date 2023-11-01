@@ -29,6 +29,23 @@ def get_stats(
     author_id_field: Optional[str] = "author_id",
     verbose: Optional[bool] = False
 ) -> Stats:
+    """
+    Calculate and return evaluation statistics for specified label fields.
+
+    Args:
+        train_df (pd.DataFrame): The training DataFrame.
+        test_df (pd.DataFrame): The testing DataFrame.
+        val_df (pd.DataFrame): The validation DataFrame.
+        train_embedding_field (str): The name of the field in the training DataFrame containing embeddings.
+        val_embedding_field (str): The name of the field in the validation DataFrame containing embeddings.
+        test_embedding_field (str): The name of the field in the testing DataFrame containing embeddings.
+        sentiment_id_field (Optional[str]): The name of the sentiment ID field. Default is "sentiment_id."
+        author_id_field (Optional[str]): The name of the author ID field. Default is "author_id."
+        verbose (Optional[bool]): Whether to print verbose output. Default is False.
+
+    Returns:
+        Stats: A dictionary of evaluation statistics for label fields.
+    """
     labels_fields = [sentiment_id_field, author_id_field]
 
     label_field_stats = {}
@@ -81,6 +98,27 @@ def attack(
     save_path: Optional[Path] = None,
     verbose: Optional[bool] = False
 ) -> Stats:
+    """
+    Perform an attack and return evaluation statistics.
+
+    Args:
+        clean_df (pd.DataFrame): The clean DataFrame.
+        private_df (pd.DataFrame): The private DataFrame.
+        clean_df_embedding_field (str): The name of the field containing clean data embeddings.
+        private_df_embedding_field (str): The name of the field containing private data embeddings.
+        train_idx_list (List[int]): List of indices for training data.
+        val_idx_list (List[int]): List of indices for validation data.
+        test_idx_list (List[int]): List of indices for testing data.
+        attack_type (str): The type of attack, either "static" or "adaptive."
+        sentiment_id_field (Optional[str]): The name of the sentiment ID field. Default is "sentiment_id."
+        author_id_field (Optional[str]): The name of the author ID field. Default is "author_id."
+        save (Optional[bool]): Whether to save the attack statistics. Default is False.
+        save_path (Optional[Path]): The path to save the statistics if 'save' is True.
+        verbose (Optional[bool]): Whether to print verbose output. Default is False.
+
+    Returns:
+        Stats: A dictionary of evaluation statistics for the specified attack type.
+    """
     assert attack_type in ["static", "adaptive"]
 
     private_df = pd.concat([private_df, clean_df[[sentiment_id_field, author_id_field]]], axis=1)
@@ -129,6 +167,21 @@ def attack(
 def get_embedding_attack_stats(
     clean_df, private_df, columns_to_run, train_idx_list, val_idx_list, test_idx_list, encode=True
 ):
+    """
+    Calculate attack statistics for different embedding models.
+
+    Args:
+        clean_df: The clean DataFrame.
+        private_df: The private DataFrame.
+        columns_to_run: List of column names to run the attack on.
+        train_idx_list: List of indices for training data.
+        val_idx_list: List of indices for validation data.
+        test_idx_list: List of indices for testing data.
+        encode (bool): Whether to encode the data with SentenceTransformer models. Default is True.
+
+    Returns:
+        dict: A dictionary containing attack statistics for different embedding models and attack types.
+    """
     assert all(
         column in clean_df.columns for column in ["review", "sentiment_id", "author_id"]
     )

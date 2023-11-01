@@ -24,12 +24,19 @@ import torch.optim.lr_scheduler as lr_scheduler
 
 
 pandarallel.initialize(progress_bar=True)
-CLEANR = re.compile("<.*?>")
-
 
 
 def split_into_sentences(doc: str) -> List[str]:
-    try :
+    """
+    Split a text document into a list of sentences.
+
+    Args:
+        doc (str): The input text document.
+
+    Returns:
+        List[str]: A list of sentences extracted from the input document.
+    """
+    try:
         return sent_tokenize(doc)
     except Exception as e:
         print("yikes")
@@ -39,6 +46,16 @@ def split_into_sentences(doc: str) -> List[str]:
 
 
 def preprocess_df(data_df: pd.DataFrame, field: str) -> pd.Series:
+    """
+    Preprocess text data in a DataFrame by splitting it into sentences.
+
+    Args:
+        data_df (pd.DataFrame): The DataFrame containing text data to be preprocessed.
+        field (str): The name of the field in the DataFrame to be processed.
+
+    Returns:
+        pd.Series: A Series containing the preprocessed data with text split into sentences.
+    """
     return data_df[field].parallel_apply(split_into_sentences)
 
 
@@ -48,6 +65,18 @@ def encode(
     encode_field: str,
     device: Optional[str] = "cuda",
 ) -> None:
+    """
+    Encode text data in a DataFrame using a pre-trained model.
+
+    Args:
+        data_df (pd.DataFrame): The DataFrame containing text data to be encoded.
+        model (torch.nn.Module): The pre-trained model for encoding text.
+        encode_field (str): The name of the field in the DataFrame to be encoded.
+        device (Optional[str]): The device (e.g., "cuda" for GPU) to use for encoding. Default is "cuda."
+
+    Returns:
+        None
+    """
     sent_field_name = f"{encode_field}_sentences"
     data_df[sent_field_name] = preprocess_df(data_df=data_df, field=encode_field)
     list_of_sentences = functools.reduce(operator.iconcat, data_df[sent_field_name], [])
@@ -78,6 +107,18 @@ def encode_df(
     encode_fields: List[str],
     model_name: Optional[str] = "all-mpnet-base-v2",
 ):
+    """
+    Encode text data in a DataFrame using a pre-trained model from SentenceTransformer.
+
+    Args:
+        data_df (pd.DataFrame): The DataFrame containing text data to be encoded.
+        encode_fields (List[str]): List of field names in the DataFrame to be encoded.
+        model_name (Optional[str]): Name of the pre-trained model from SentenceTransformer.
+            Default is "all-mpnet-base-v2."
+
+    Returns:
+        None
+    """
     model = SentenceTransformer(model_name)
 
     for encode_field in encode_fields:
@@ -105,6 +146,18 @@ class MLP(nn.Module):
 
 
 def train_step(model, optimizer, criterion, train_dataloader):
+    """
+    Perform a training step for a PyTorch model.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model to train.
+        optimizer (torch.optim.Optimizer): The optimizer to update model parameters.
+        criterion (nn.Module): The loss criterion used for training.
+        train_dataloader (torch.utils.data.DataLoader): DataLoader for training data.
+
+    Returns:
+        float: The average training loss for the current training step.
+    """
     model.train()
     epoch_train_loss = 0.0
     for i, (features, label) in enumerate(train_dataloader):
@@ -120,8 +173,18 @@ def train_step(model, optimizer, criterion, train_dataloader):
 
 
 def val_step(model, val_dataloader):
-    model.eval()
+    """
+    Perform a validation step for a PyTorch model.
 
+    Args:
+        model (torch.nn.Module): The PyTorch model to evaluate.
+        val_dataloader (torch.utils.data.DataLoader): DataLoader for validation data.
+
+    Returns:
+        float: The macro F1 score for the validation data.
+    """
+
+    model.eval()
     all_predicted = []
     all_true = []
     with torch.no_grad():
@@ -143,7 +206,22 @@ def train_model(
     print_every: Optional[int] = 1,
     verbose: Optional[bool] = False,
 ) -> Tuple[torch.nn.Module, List[float], List[float]]:
-    
+    """
+    Train a PyTorch model on training data and validate it on validation data.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model to train and validate.
+        train_dataloader (torch.utils.data.DataLoader): DataLoader for the training data.
+        val_dataloader (torch.utils.data.DataLoader): DataLoader for the validation data.
+        train_epochs (Optional[int]): Number of training epochs. Default is 100.
+        print_every (Optional[int]): Print progress every `print_every` epochs. Default is 1.
+        verbose (Optional[bool]): If True, print training progress.
+
+    Returns:
+        Tuple[torch.nn.Module, List[float], List[float]]: A tuple containing the trained model,
+        a list of training loss values, and a list of validation F1 score values.
+    """
+
     train_losses = []
     val_f1s = []
     criterion = nn.CrossEntropyLoss()
@@ -196,6 +274,25 @@ def get_train_mlp(
     plot: Optional[str] = False,
     verbose: Optional[str] = False,
 ):
+    """
+    Create and train a multi-layer perceptron (MLP) model for classification.
+
+    Args:
+        train_dataloader (torch.utils.data.DataLoader): DataLoader for the training data.
+        val_dataloader (torch.utils.data.DataLoader): DataLoader for the validation data.
+        num_classes (int): Number of classes for classification.
+        input_size (Optional[int]): Size of the input features. Default is 768.
+        hidden_size (Optional[int]): Size of the hidden layer in the MLP. Default is 768.
+        train_epochs (Optional[int]): Number of training epochs. Default is 20.
+        device (str): The device to use for training (e.g., "cuda" for GPU).
+        plot (Optional[bool]): If True, plot training and validation loss curves.
+        verbose (Optional[bool]): If True, print training progress.
+
+    Returns:
+        Tuple[torch.nn.Module, List[float], List[float]]: A tuple containing the trained MLP model,
+        a list of training loss values, and a list of validation loss values.
+    """
+
     def plot_loss(losses: List[float], label: str) -> None:
         plt.plot(losses)
         plt.xlabel("Epoch")
@@ -225,6 +322,20 @@ def get_loader(
     device: Optional[str] = "cuda",
     shuffle: Optional[bool] = True,
 ) -> torch.utils.data.DataLoader:
+    """
+    Create a PyTorch DataLoader for a dataset stored in a Pandas DataFrame.
+
+    Args:
+        data_df (pd.DataFrame): The Pandas DataFrame containing the dataset.
+        embedding_field (str): The name of the DataFrame column containing feature embeddings.
+        label_field (str): The name of the DataFrame column containing labels.
+        batch_size (Optional[int]): Batch size for data loading. Default is 32.
+        device (Optional[str]): The device to move data to (e.g., "cuda" for GPU). Default is "cuda".
+        shuffle (Optional[bool]): Whether to shuffle the data. Default is True.
+
+    Returns:
+        torch.utils.data.DataLoader: A PyTorch DataLoader for the dataset.
+    """
     features = torch.vstack(data_df[embedding_field].tolist()).to(device)
     labels = torch.tensor(data_df[label_field].tolist(), dtype=torch.long).to(device)
     features.requires_grad = False
@@ -242,7 +353,19 @@ def run_eval(
     eval_dataloader: torch.utils.data.DataLoader,
     verbose: Optional[bool] = False,
 ) -> Dict[str, float]:
-    model.eval()
+    """
+    Run evaluation on a PyTorch model using a given data loader.
+
+    Args:
+        model (torch.nn.Module): The PyTorch model to evaluate.
+        eval_dataloader (torch.utils.data.DataLoader): DataLoader for evaluation data.
+        verbose (Optional[bool]): If True, print evaluation metrics, including loss, accuracy,
+            F1 score, MCC, and confusion matrix.
+
+    Returns:
+        Dict[str, float]: A dictionary containing evaluation metrics, including "Accuracy",
+            "F1 Score", and "Mathew correlation coefficient".
+    """
 
     predictions = []
     criterion = nn.CrossEntropyLoss()
